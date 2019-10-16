@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajax</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<form method="post" id="customeForm" variable="{% url 'ajax_load_fetchState' %}">
+    {% csrf_token %}
+    <input type="text" id="txtbox1" >
+    <input type="text" id="txtbox2" >
+    <input type="submit" id="btn">
+    <p id="name"></p>
+    <p id="val"></p>
+    <p id="len"></p>
+    <p id="max"></p>
+</form>
+
+<table border="1" id="userTable">
+    <tr>
+        <th>Id</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+    </tr>
+    {% for i in obj %}
+        <tr>
+            <td>{{ i.id }}</td>
+            <td>{{ i.First_name }}</td>
+            <td>{{ i.Last_name }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $("#btn").click(function(e) {
+        e.preventDefault();
+        var url = $("#customeForm").attr("variable");
+        var val1 = $('#txtbox1').val();
+        var val2 = $('#txtbox2').val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'val1': val1,
+                'val2': val2
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.user) {
+                  appendToUsrTable(data.user);
+                }
+            }
+        });
+        $('form#customeForm').trigger("reset");
+        return false;
+    });
+
+    function appendToUsrTable(user) {
+        $("#userTable > tbody:last-child").append(`
+        <tr>
+            <td>${user.id }</td>
+            <td>${user.First_name}</td>
+            <td>${user.Last_name}</td>
+        </tr>
+    `);
+    }
+</script>
+</body>
+</html>
+
+{##}
+{#without json#}
+{##}
+{#$.ajax({#}
+{#            url: url,#}
+{#            data: {#}
+{#                'val1': val1,#}
+{#                'val2': val2#}
+{#            },#}
+{#            dataType: 'json',#}
+{#            success: function (data) {#}
+{#               $('#st').text(data);#}
+{#                console.log(data);#}
+{#            }#}
+{#        });#}
+{##}
+{##}
+{##}
